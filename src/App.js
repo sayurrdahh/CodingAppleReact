@@ -14,10 +14,12 @@ function App() {
   // state는 재랜더링이 자동으로 된다.
   //let [logo, setLogo] = useState('react blog'); //보관할 자료  
 
-  let [좋아요,좋아요변경] = useState(0);
+  let [좋아요,좋아요변경] = useState([0,0,0]);
 
   let [modal, setModal] = useState(false); //ui의 현재 상태를 state로 저장 
-  
+
+  let[title,setTitle] = useState(0);
+
   //destructuring 문법
   let[a, c] = [1,2]; //a =1 c=2 
 
@@ -35,42 +37,71 @@ function App() {
         글제목변경(copy);
       }}>글수정</button>
 
-      <div className="list">
+      {/* <div className="list">
         <h4 >{글제목[0]} <span onClick={() => { 좋아요변경(좋아요+1) }}>🩷</span> {좋아요} </h4>
         <p>2월 17일 발행</p>
-      </div>
+      </div> */}
+
+    {/*반복 하고싶을 때 map함수 쓰기 */}
+      {
+         글제목.map(function(a, i){
+          return (
+          <div className="list" key={i}>
+            <h4 onClick={()=>{setModal(true); setTitle(i)}}>{a} 
+            <span onClick={() => { 
+              let copy2 = [...좋아요];
+              copy2[i] =  copy2[i] + 1;
+              좋아요변경(copy2)
+              }}>🩷</span> {좋아요[i]} </h4>
+            <p>2월 {17 + i}일 발행</p>
+          </div>
+          )
+        })
+      }
 
       <button onClick={() => {modal == true ? setModal(false) : setModal(true)}} > 열림/닫흼</button>
 
-      {
+      {/* {
         //if는 안됨. 삼항연산자로 써야함
-        modal == true ? <Modal></Modal> : '' 
-  
+        modal == true ? <Modal 글제목수정={() => {
+          let copy = [...글제목]; //state가 array/object면 독립적 카피본을 만들어서 수정해야 함
+          copy[0] = '여자 신발 추천';
+          글제목변경(copy);
+        } } color={'skyblue'} 
+        title={title} 
+        글제목={글제목}></Modal> : null
+      } */}
+
+        {
+        modal == true ? <Modal title={title} 글제목={글제목} /> : null
       }
     </div>
   );
 }
 
-  //컴포넌트 만드는 법
-  //1.function만들기
-  //2.return()안에 html담기
-  //<함수명></함수명>쓰기 
-  //의미없는 div로 감싸기 대신 <> </> 로 감싸도 된다
-  //컴퍼넌트 쓰일때 3가지 
-  //1. 반복적인 html 축약할 때 
-  //2. 큰 페이지들  
-  //3.자주 변경되는 것들 
-function Modal(){
-  return (
-  <> 
-  <div className='Modal'>
-    <h4>제목</h4>
-    <p>날짜</p>
-    <p>상세내용</p>
-  </div>
-  <div>작성자</div>
-  </>
-  )
+  // 컴포넌트 만드는 법
+  // 1.function만들기
+  // 2.return()안에 html담기
+  // <함수명></함수명>쓰기 
+  // 의미없는 div로 감싸기 대신 <> </> 로 감싸도 된다
+  // 컴퍼넌트 쓰일때 3가지 
+  // 1. 반복적인 html 축약할 때 
+  // 2. 큰 페이지들  
+  // 3.자주 변경되는 것들 
+  //부모 컨퍼넌트가 가지고 있는 state를 자식한테 전송할때는 props를 사용
+  //  1. <자식컴포넌트 작명 = {state이름}>
+ // 2.props 파라미터 등록 후 props.작명 사용
+  function Modal(props){
+    return (
+    <> 
+    <div className='Modal' style={{background : props.color}}>
+      <h4>{props.글제목[props.title]}</h4>
+      <p>날짜</p>
+      <p>상세내용</p>
+      <button onClick={props.글제목수정}>글수정</button>
+    </div>
+    </>
+    )
 
   const Modal2 = () => {};
 }
